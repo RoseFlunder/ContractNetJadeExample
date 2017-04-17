@@ -1,5 +1,8 @@
 package de.uni.oldenburg.intelligent;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -19,7 +22,7 @@ public class AdminAgent extends Agent {
 	
 	
 	private AID firstAuctioneer = null;
-	private int agentsLoggedIn = 0;
+	private Set<AID> agents = new HashSet<>();
 
 	@Override
 	protected void setup() {
@@ -38,22 +41,29 @@ public class AdminAgent extends Agent {
 			ACLMessage msg = receive();
 			
 			if (msg != null) {
-				System.out.println(getAID() + " received message from" + msg.getSender().getLocalName()
+				System.out.println(getAID().getLocalName() + " received message from " + msg.getSender().getLocalName()
 						+ " with content: " + msg.getContent());
 				//check for login messages from the three participants
 				if (msg.getPerformative() == ACLMessage.INFORM && LOGIN_MSG.equals(msg.getContent())) {
 					if (firstAuctioneer == null)
 						firstAuctioneer = msg.getSender();
-					++agentsLoggedIn;
+					agents.add(msg.getSender());
 				} 
 				//check for user message to start the system
 				else  if (msg.getPerformative() == ACLMessage.REQUEST && START_MSG.equals(msg.getContent())) {
 					ACLMessage reply = msg.createReply();
 					//start the system if all three participants are logged in
-					if (agentsLoggedIn == 3) {
-						ACLMessage startSystemMsg = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-						startSystemMsg.addReceiver(firstAuctioneer);
-						send(startSystemMsg);
+					if (agents.size() == 3) {
+						for (AID agent : agents) {
+							ACLMessage startMsg = new ACLMessage(ACLMessage.INFORM);
+							if (agent.equals(firstAuctioneer)) {
+								startMsg.setContent(LOGIN_RESPONSE_AUCTIONEER);
+							} else {
+								startMsg.setContent(LOGIN_RESPONSE_PARTICIPANT);
+							}
+							startMsg.addReceiver(agent);
+							send(startMsg);
+						}
 					}
 					//send an error if the system is not ready yet
 					else {
