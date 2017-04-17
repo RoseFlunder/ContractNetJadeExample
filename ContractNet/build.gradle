@@ -1,0 +1,29 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+archivesBaseName = 'ContractNet'
+version = '1.0'
+
+
+dependencies {
+    compile files('libs/jade.jar')
+}
+
+task copyToLib( type: Copy ) {
+    into "$buildDir/libs/lib"
+    from configurations.compile
+}
+
+jar {
+	dependsOn ('copyToLib')
+	
+    manifest {
+    	def manifestCp = configurations.compile.collect { 'lib/' + it.getName() }.join(' ')
+    
+        attributes("Implementation-Title": "ContractNet",
+                   "Implementation-Version": version,
+                   "Main-Class": "jade.Boot",
+                   "Class-Path": manifestCp)
+    }
+}
