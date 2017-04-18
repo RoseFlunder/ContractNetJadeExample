@@ -1,4 +1,4 @@
-package de.uni.oldenburg.intelligent;
+package de.uni.oldenburg.intelligent.contract;
 
 import java.util.HashSet;
 import java.util.Set;

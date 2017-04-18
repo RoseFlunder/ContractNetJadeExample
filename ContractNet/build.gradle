@@ -15,6 +15,11 @@ task copyToLib( type: Copy ) {
     from configurations.compile
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 jar {
 	dependsOn ('copyToLib')
 	
@@ -23,7 +28,11 @@ jar {
     
         attributes("Implementation-Title": "ContractNet",
                    "Implementation-Version": version,
-                   "Main-Class": "jade.Boot",
+                   "Main-Class": "de.uni.oldenburg.intelligent.contract.StartSystem",
                    "Class-Path": manifestCp)
     }
+}
+
+artifacts {
+    archives sourcesJar
 }

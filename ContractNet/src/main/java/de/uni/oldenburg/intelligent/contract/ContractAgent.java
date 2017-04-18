@@ -1,4 +1,4 @@
-package de.uni.oldenburg.intelligent;
+package de.uni.oldenburg.intelligent.contract;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -15,7 +15,7 @@ public class ContractAgent extends Agent {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final String[] AGENT_NAMES = {"Alice", "Bob", "Charlie"};
+	public static final String[] AGENT_NAMES = {"Alice", "Bob", "Charlie"};
 	private static final AID AID_ADMIN = new AID(AdminAgent.LOCAL_NAME, AID.ISLOCALNAME);
 	
 	public static final String CALL_MSG_TEMPLATE = "CALL:%d:%d:%d";
